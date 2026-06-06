@@ -413,6 +413,10 @@ def delete_client(client_id):
     db_exec("DELETE FROM clients WHERE id=?", (client_id,))
     return redirect("/clients")
 
+@app.route("/pricing")
+def pricing():
+    return render_template("pricing.html")
+
 if __name__ == "__main__":
     print()
     print("  ================================================")

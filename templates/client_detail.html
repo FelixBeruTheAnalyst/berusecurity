@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+    <div>
+      <a href="/clients" style="font-size:12px;color:#7d8590;text-decoration:none">← All Clients</a>
+      <div class="page-title" style="margin:4px 0 0">{{client[1]}}</div>
+      <div style="font-size:13px;color:#7d8590">{{client[2] or 'No company'}}</div>
+    </div>
+    <form method="POST" action="/clients/{{client[0]}}/delete"
+          onsubmit="return confirm('Delete this client?')">
+      <button type="submit" style="background:#200d0d;border:1px solid #ff4444;color:#ff4444;
+              padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px">
+        Delete Client
+      </button>
+    </form>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:20px">
+    <div class="card">
+      <h3>Contact Info</h3>
+      <div style="font-size:13px;line-height:2.2;color:#7d8590">
+        <div>📧 <span style="color:#e6edf3">{{client[3] or 'No email'}}</span></div>
+        <div>📱 <span style="color:#e6edf3">{{client[4] or 'No phone'}}</span></div>
+        <div>📅 Added: <span style="color:#e6edf3">{{client[7][:10] if client[7] else 'Unknown'}}</span></div>
+        <div>⚡ Status: <span class="badge {% if client[6]=='active' %}cl{% else %}me{% endif %}">{{client[6]}}</span></div>
+      </div>
+      {% if client[5] %}
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid #1e2a3a;font-size:12px;color:#7d8590">
+        {{client[5]}}
+      </div>
+      {% endif %}
+    </div>
+    <div class="card">
+      <h3>🤖 AI Security Summary</h3>
+      <div class="ai-box">{{ai_summary}}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+    <div class="stat-card"><div class="n">{{stats.scans}}</div><div class="l">Scans</div></div>
+    <div class="stat-card cr"><div class="n">{{stats.critical}}</div><div class="l">Critical</div></div>
+    <div class="stat-card hi"><div class="n">{{stats.high}}</div><div class="l">High</div></div>
+  </div>
+
+  {% if findings %}
+  <div class="card">
+    <h3>Critical & High Findings</h3>
+    <table>
+      <thead><tr><th>Time</th><th>Risk</th><th>Category</th><th>Target</th><th>Description</th></tr></thead>
+      <tbody>
+        {% for ts,risk,cat,tgt,desc in findings %}
+        <tr>
+          <td class="mono">{{ts[:16]}}</td>
+          <td><span class="badge {% if risk=='CRITICAL' %}cr{% else %}hi{% endif %}">{{risk}}</span></td>
+          <td><span class="tag">{{cat}}</span></td>
+          <td class="mono">{{tgt[:20]}}</td>
+          <td>{{desc[:50]}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if scans %}
+  <div class="card">
+    <h3>Scan History</h3>
+    <table>
+      <thead><tr><th>Time</th><th>Type</th><th>Target</th><th>Findings</th><th>Verdict</th></tr></thead>
+      <tbody>
+        {% for ts,stype,tgt,found,verdict in scans %}
+        <tr>
+          <td class="mono">{{ts[:16]}}</td>
+          <td><span class="tag">{{stype}}</span></td>
+          <td class="mono">{{tgt[:25]}}</td>
+          <td>{{found}}</td>
+          <td><span class="badge
+            {% if verdict=='CRITICAL' %}cr
+            {% elif verdict=='HIGH' %}hi
+            {% elif verdict in ('CLEAN','STRONG') %}cl
+            {% else %}me{% endif %}">{{verdict}}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if not scans %}
+  <div class="card" style="text-align:center;padding:40px">
+    <div style="font-size:32px;margin-bottom:12px">🔍</div>
+    <div style="font-weight:700;margin-bottom:8px">No scans for this client yet</div>
+    <div style="font-size:13px;color:#7d8590;margin-bottom:20px">Run a port scan or web scan and it will appear here</div>
+    <a href="/scan" class="btn">Run First Scan</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

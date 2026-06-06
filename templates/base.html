@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BeruSecurity</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0b0d12;color:#e6edf3;min-height:100vh}
+nav{background:#141820;border-bottom:2px solid #22A39F;padding:0 32px;display:flex;align-items:center;gap:0;height:56px}
+.nav-brand{font-size:18px;font-weight:800;color:#22A39F;letter-spacing:2px;margin-right:32px}
+.nav-brand span{color:#e6edf3}
+nav a{color:#7d8590;text-decoration:none;padding:18px 16px;font-size:13px;
+      display:inline-block;border-bottom:2px solid transparent;transition:all 0.2s}
+nav a:hover,nav a.active{color:#22A39F;border-bottom-color:#22A39F}
+.page{max-width:1100px;margin:0 auto;padding:32px}
+.page-title{font-size:22px;font-weight:700;margin-bottom:24px;color:#e6edf3}
+.card{background:#141820;border:1px solid #1e2a3a;border-radius:12px;padding:24px;margin-bottom:20px}
+.card h3{font-size:12px;color:#22A39F;text-transform:uppercase;letter-spacing:2px;
+         margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #1e2a3a}
+.btn{background:#22A39F;color:#0b0d12;border:none;padding:10px 24px;
+     border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;
+     transition:all 0.2s;display:inline-block}
+.btn:hover{background:#1a8a80}
+.btn-outline{background:transparent;border:1px solid #22A39F;color:#22A39F}
+.btn-outline:hover{background:#22A39F;color:#0b0d12}
+input,textarea{width:100%;background:#0b0d12;border:1px solid #1e2a3a;
+               border-radius:8px;color:#e6edf3;padding:10px 14px;
+               font-size:13px;outline:none;transition:border 0.2s}
+input:focus,textarea:focus{border-color:#22A39F}
+.badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;color:white}
+.cr{background:#ff4444}.hi{background:#ff8800}.me{background:#ffcc00;color:#333}
+.lo{background:#44aaff}.cl{background:#44cc88}.st{background:#44cc88}
+.mo{background:#ffcc00;color:#333}.vw{background:#ff4444}
+.tag{background:#1e2a3a;color:#22A39F;padding:2px 8px;border-radius:4px;font-size:10px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#1a2230;color:#7d8590;padding:10px 12px;text-align:left;
+   font-size:10px;text-transform:uppercase;letter-spacing:1px}
+td{padding:10px 12px;border-bottom:1px solid #1e2a3a;color:#e6edf3}
+tr:hover td{background:#1a2230}
+.mono{font-family:monospace;font-size:11px}
+.ai-box{background:#0d1821;border-left:3px solid #22A39F;padding:14px 16px;
+        border-radius:0 8px 8px 0;margin-top:12px;font-size:13px;
+        line-height:1.7;color:#c8d8e8}
+.ai-label{font-size:10px;font-weight:700;color:#22A39F;letter-spacing:1px;
+          text-transform:uppercase;margin-bottom:6px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #1e2a3a;
+         border-top-color:#22A39F;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:#141820;border:1px solid #1e2a3a;border-radius:10px;padding:18px;text-align:center}
+.stat-card .n{font-size:34px;font-weight:800;color:#22A39F;font-family:monospace}
+.stat-card .l{font-size:10px;color:#7d8590;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.stat-card.cr .n{color:#ff4444}.stat-card.hi .n{color:#ff8800}
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px}
+.alert-success{background:#0d2018;border:1px solid #44cc88;color:#44cc88}
+.alert-error{background:#200d0d;border:1px solid #ff4444;color:#ff4444}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-brand">🔐 Beru<span>Security</span></div>
+  <a href="/" {% if request.path=='/' %}class="active"{% endif %}>Dashboard</a>
+  <a href="/scan" {% if request.path=='/scan' %}class="active"{% endif %}>Port Scan</a>
+  <a href="/password" {% if request.path=='/password' %}class="active"{% endif %}>Password</a>
+  <a href="/dashboard" {% if request.path=='/dashboard' %}class="active"{% endif %}>Analytics</a>
+  <a href="/ai-chat" {% if request.path=='/ai-chat' %}class="active"{% endif %}>AI Chat</a>
+  <a href="/clients" {% if request.path.startswith("/clients") %}class="active"{% endif %}>Clients</a>
+  <a href="/report" {% if request.path=='/report' %}class="active"{% endif %}>Report</a>
+</nav>
+{% block content %}{% endblock %}
+</body>
+</html>

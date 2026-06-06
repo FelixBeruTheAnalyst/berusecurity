@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page">
+  <div class="page-title">Analytics Dashboard</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="n">{{stats.scans}}</div><div class="l">Scans</div></div>
+    <div class="stat-card"><div class="n">{{stats.findings}}</div><div class="l">Findings</div></div>
+    <div class="stat-card cr"><div class="n">{{stats.critical}}</div><div class="l">Critical</div></div>
+    <div class="stat-card hi"><div class="n">{{stats.high}}</div><div class="l">High</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <h3>Findings by Risk Level</h3>
+      {% for risk,count in by_risk %}
+      {% set colors = {'CRITICAL':'#ff4444','HIGH':'#ff8800','MEDIUM':'#ffcc00','LOW':'#44aaff','INFO':'#44cc88'} %}
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:11px;color:#7d8590;min-width:80px;font-family:monospace">{{risk}}</span>
+        <div style="height:18px;border-radius:3px;background:{{colors.get(risk,'#aaa')}};width:{{[count*25,240]|min}}px"></div>
+        <span style="font-size:11px;color:#e6edf3;font-family:monospace">{{count}}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="card">
+      <h3>Most Targeted Systems</h3>
+      {% for target,count in top_targets %}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e2a3a">
+        <span class="mono">{{target[:30]}}</span>
+        <span class="badge cr">{{count}}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <h3>Known Attackers</h3>
+    {% if attackers %}
+    <table>
+      <thead><tr><th>IP Address</th><th>Attacks</th><th>First Seen</th><th>Last Seen</th></tr></thead>
+      <tbody>
+        {% for ip,count,first,last in attackers %}
+        <tr>
+          <td class="mono">{{ip}}</td>
+          <td><span class="badge cr">{{count}}</span></td>
+          <td class="mono">{{first[:16]}}</td>
+          <td class="mono">{{last[:16]}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div style="color:#7d8590;text-align:center;padding:20px">No attackers recorded</div>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h3>Critical & High Findings</h3>
+    <table>
+      <thead><tr><th>Time</th><th>Risk</th><th>Category</th><th>Target</th><th>Description</th></tr></thead>
+      <tbody>
+        {% for ts,risk,cat,tgt,desc in findings %}
+        <tr>
+          <td class="mono">{{ts[:16]}}</td>
+          <td><span class="badge {% if risk=='CRITICAL' %}cr{% else %}hi{% endif %}">{{risk}}</span></td>
+          <td><span class="tag">{{cat}}</span></td>
+          <td class="mono">{{tgt[:20]}}</td>
+          <td>{{desc[:50]}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

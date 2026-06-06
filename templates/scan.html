@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page">
+  <div class="page-title">Port Scanner</div>
+  <div class="card">
+    <h3>Scan Target</h3>
+    <div style="display:flex;gap:12px;align-items:flex-end">
+      <div style="flex:1">
+        <label style="font-size:11px;color:#7d8590;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Target IP Address</label>
+        <input type="text" id="target" placeholder="e.g. 172.30.224.1" value="172.30.224.1">
+      </div>
+      <button class="btn" onclick="runScan()" id="scan-btn">Run Scan</button>
+    </div>
+  </div>
+  <div id="results" style="display:none">
+    <div class="card">
+      <h3>Scan Results</h3>
+      <div id="verdict-box" style="padding:12px 16px;border-radius:8px;margin-bottom:16px;font-weight:700"></div>
+      <table>
+        <thead><tr><th>Port</th><th>Service</th><th>Risk</th><th>Description</th></tr></thead>
+        <tbody id="ports-body"></tbody>
+      </table>
+      <div style="margin-top:16px">
+        <div class="ai-label">🤖 AI Analysis</div>
+        <div class="ai-box" id="ai-result"></div>
+      </div>
+    </div>
+  </div>
+  <div id="loading" style="display:none;text-align:center;padding:40px">
+    <div class="spinner"></div>
+    <div style="margin-top:12px;color:#7d8590;font-size:13px">Scanning 1024 ports with 100 threads...</div>
+  </div>
+  <div id="error-box" style="display:none" class="alert alert-error"></div>
+</div>
+<script>
+const RISK_CLASS = {CRITICAL:'cr',HIGH:'hi',MEDIUM:'me',LOW:'lo',INFO:'cl',UNKNOWN:'me'};
+async function runScan() {
+  const target = document.getElementById('target').value.trim();
+  if (!target) return;
+  document.getElementById('results').style.display='none';
+  document.getElementById('error-box').style.display='none';
+  document.getElementById('loading').style.display='block';
+  document.getElementById('scan-btn').disabled=true;
+  document.getElementById('scan-btn').textContent='Scanning...';
+  try {
+    const fd = new FormData();
+    fd.append('target', target);
+    const resp = await fetch('/scan', {method:'POST', body:fd});
+    const data = await resp.json();
+    document.getElementById('loading').style.display='none';
+    document.getElementById('scan-btn').disabled=false;
+    document.getElementById('scan-btn').textContent='Run Scan';
+    if (data.error) {
+      document.getElementById('error-box').textContent='Error: '+data.error;
+      document.getElementById('error-box').style.display='block';
+      return;
+    }
+    const vbox = document.getElementById('verdict-box');
+    const vcolors = {CRITICAL:'#ff4444',HIGH:'#ff8800',MEDIUM:'#ffcc00',CLEAN:'#44cc88',LOW:'#44aaff'};
+    vbox.style.background = (vcolors[data.verdict]||'#aaa')+'22';
+    vbox.style.border = '1px solid '+(vcolors[data.verdict]||'#aaa');
+    vbox.style.color = vcolors[data.verdict]||'#aaa';
+    vbox.textContent = data.verdict + ' — '+data.ports.length+' open port(s) on '+data.target;
+    const tbody = document.getElementById('ports-body');
+    tbody.innerHTML = '';
+    if (data.ports.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#7d8590">No open ports found</td></tr>';
+    } else {
+      data.ports.forEach(p => {
+        tbody.innerHTML += '<tr><td class="mono"><b>'+p.port+'</b></td>'
+          +'<td><span class="tag">'+p.service+'</span></td>'
+          +'<td><span class="badge '+RISK_CLASS[p.risk]+'">'+p.risk+'</span></td>'
+          +'<td>'+p.description+'</td></tr>';
+      });
+    }
+    document.getElementById('ai-result').textContent = data.ai;
+    document.getElementById('results').style.display='block';
+  } catch(e) {
+    document.getElementById('loading').style.display='none';
+    document.getElementById('scan-btn').disabled=false;
+    document.getElementById('scan-btn').textContent='Run Scan';
+    document.getElementById('error-box').textContent='Request failed: '+e;
+    document.getElementById('error-box').style.display='block';
+  }
+}
+document.getElementById('target').addEventListener('keypress', e => { if(e.key==='Enter') runScan(); });
+</script>
+{% endblock %}

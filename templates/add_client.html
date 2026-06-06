@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+    <div class="page-title" style="margin:0">Add New Client</div>
+    <a href="/clients" style="color:#7d8590;text-decoration:none;font-size:13px">← Back to Clients</a>
+  </div>
+  <div class="card" style="max-width:560px">
+    <h3>Client Details</h3>
+    <form method="POST">
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;color:#7d8590;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Full Name *</label>
+        <input type="text" name="name" placeholder="e.g. John Kamau" required>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;color:#7d8590;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Company</label>
+        <input type="text" name="company" placeholder="e.g. Safaricom PLC">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;color:#7d8590;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Email</label>
+        <input type="email" name="email" placeholder="client@company.com">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;color:#7d8590;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Phone</label>
+        <input type="text" name="phone" placeholder="+254 700 000 000">
+      </div>
+      <div style="margin-bottom:24px">
+        <label style="font-size:11px;color:#7d8590;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Notes</label>
+        <textarea name="notes" rows="3" placeholder="Any notes about this client..." style="width:100%;background:#0b0d12;border:1px solid #1e2a3a;border-radius:8px;color:#e6edf3;padding:10px 14px;font-size:13px;outline:none;resize:vertical"></textarea>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button type="submit" class="btn">Save Client</button>
+        <a href="/clients" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

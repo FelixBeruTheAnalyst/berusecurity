@@ -65,6 +65,7 @@ tr:hover td{background:#1a2230}
   <a href="/dashboard" {% if request.path=='/dashboard' %}class="active"{% endif %}>Analytics</a>
   <a href="/ai-chat" {% if request.path=='/ai-chat' %}class="active"{% endif %}>AI Chat</a>
   <a href="/clients" {% if request.path.startswith("/clients") %}class="active"{% endif %}>Clients</a>
+  <a href="/pricing" {% if request.path=="/pricing" %}class="active"{% endif %}>Pricing</a>
   <a href="/report" {% if request.path=='/report' %}class="active"{% endif %}>Report</a>
 </nav>
 {% block content %}{% endblock %}
